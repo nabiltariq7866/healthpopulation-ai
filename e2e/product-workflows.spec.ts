@@ -42,6 +42,7 @@ test("screening campaign: launch, simulate responses and update screening gap", 
   page,
 }) => {
   await page.goto("/outreach");
+  await page.getByRole("button", { name: "Campaigns" }).click();
   const campaign = page
     .locator(".campaign")
     .filter({ hasText: "Cardiovascular Screening Recovery" })
@@ -67,6 +68,7 @@ test("cohort builder: save, open and add selected patient to campaign", async ({
   await page.getByRole("checkbox", { name: "Select Maria Collins" }).check();
   await page.getByRole("button", { name: "Add to outreach campaign" }).click();
   await page.goto("/outreach");
+  await page.getByRole("button", { name: "Campaigns" }).click();
   await expect(page.getByText("Registry outreach — 1 patients")).toBeVisible();
   await expect(
     page.getByText("Selected Registry Patients · 1 targeted"),
