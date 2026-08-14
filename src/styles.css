@@ -2098,3 +2098,550 @@ td small {
   font-size: 10.5px;
 }
 
+/* =========================================================
+   RISK STRATIFICATION — PREMIUM REVIEW TABLE
+   ========================================================= */
+
+.table-card {
+  overflow: hidden;
+}
+
+.table-card .table-wrap {
+  border-top: 1px solid var(--border, #ddd8e3);
+}
+
+/* Header */
+
+.table-card table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-card thead th {
+  height: 42px;
+  padding: 0 14px;
+  background: #f7f5f9;
+  color: #706879;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e5e0e9;
+  white-space: nowrap;
+}
+
+/* Rows */
+
+.risk-review-row {
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.risk-review-row:hover {
+  background: #fbfafc;
+}
+
+.risk-review-row td {
+  height: 82px;
+  padding: 12px 14px;
+  vertical-align: middle;
+  border-bottom: 1px solid #ebe7ee;
+  color: #302a37;
+}
+
+.risk-review-row:last-child td {
+  border-bottom: 0;
+}
+
+/* Patient */
+
+.risk-patient-cell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.risk-patient-avatar {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  border-radius: 10px;
+  background: #f1eff6;
+  border: 1px solid #e1dce8;
+  color: #493b5a;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.risk-patient-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.risk-patient-copy b {
+  color: #282431;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.risk-patient-copy small {
+  color: #817987;
+  font-size: 10.5px;
+  line-height: 1.25;
+}
+
+/* Risk tier */
+
+.risk-tier-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.risk-tier-cell .badge {
+  min-height: 24px;
+  padding: 4px 9px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.risk-reviewed-label {
+  color: #746d7b;
+  font-size: 9.5px;
+  white-space: nowrap;
+}
+
+/* Evidence */
+
+.risk-evidence-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 290px;
+}
+
+.risk-evidence-cell b {
+  color: #3c3443;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.risk-evidence-cell span {
+  color: #817788;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+/* Care gaps */
+
+.risk-gap-cell {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  color: #665e6d;
+  font-size: 11px;
+}
+
+.risk-gap-count {
+  min-width: 27px;
+  height: 27px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #fbf5e8;
+  border: 1px solid #ead8af;
+  color: #956c22;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.risk-gap-count.attention {
+  background: #faedef;
+  border-color: #edd1d6;
+  color: #a54b5a;
+}
+
+/* Freshness */
+
+.risk-freshness {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.risk-freshness-status {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eaf7f2;
+  color: #22705e;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.risk-freshness-status i {
+  width: 6px;
+  height: 6px;
+  display: block;
+  border-radius: 50%;
+  background: #2e8a72;
+}
+
+.risk-freshness small {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #8a818f;
+  font-size: 9.5px;
+}
+
+.risk-freshness small b {
+  color: #645c6a;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* Human review */
+
+.risk-review-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 250px;
+}
+
+.risk-review-select {
+  width: 145px;
+  flex: 0 0 145px;
+}
+
+.risk-review-select .custom-select {
+  width: 100%;
+}
+
+.risk-review-select .custom-select-trigger {
+  min-height: 38px;
+  width: 100%;
+  padding: 0 11px;
+  border-radius: 9px;
+  background: #fff;
+  font-size: 11.5px;
+}
+
+.risk-confirm-btn {
+  min-height: 38px;
+  min-width: 92px;
+  padding: 0 12px;
+  border-radius: 9px;
+  font-size: 10.5px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+/* Open action */
+
+.risk-open-cell {
+  width: 50px;
+  text-align: center;
+}
+
+.risk-open-button {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #766d7c;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.risk-open-button:hover {
+  background: #f1eff6;
+  border-color: #ded8e5;
+  color: #372a45;
+  transform: translateX(2px);
+}
+
+.risk-open-button:focus-visible,
+.risk-patient-cell:focus-visible {
+  outline: 2px solid #635bb5;
+  outline-offset: 2px;
+}
+
+/* Better column sizing */
+
+.table-card th:nth-child(1),
+.table-card td:nth-child(1) {
+  width: 16%;
+}
+
+.table-card th:nth-child(2),
+.table-card td:nth-child(2) {
+  width: 13%;
+}
+
+.table-card th:nth-child(3),
+.table-card td:nth-child(3) {
+  width: 27%;
+}
+
+.table-card th:nth-child(4),
+.table-card td:nth-child(4) {
+  width: 11%;
+}
+
+.table-card th:nth-child(5),
+.table-card td:nth-child(5) {
+  width: 13%;
+}
+
+.table-card th:nth-child(6),
+.table-card td:nth-child(6) {
+  width: 20%;
+}
+
+/* Medium desktop */
+
+@media (max-width: 1280px) {
+  .risk-review-actions {
+    min-width: 205px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .risk-review-select {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .risk-confirm-btn {
+    width: 100%;
+  }
+
+  .risk-review-row td {
+    height: 94px;
+  }
+}
+
+/* =========================================================
+   RISK REVIEW — HEADER SPACING + DROPDOWN LAYERING FIX
+   Manual UI QA refinements
+   ========================================================= */
+
+/* Give the risk review card breathing room below the page tabs */
+.table-card:has(.risk-review-row) {
+  position: relative;
+  margin-top: 16px;
+  overflow: visible;
+  border-radius: 12px;
+}
+
+/* Proper premium section header instead of text touching the top edge */
+.table-card:has(.risk-review-row) > .card-head {
+  margin: 0;
+  padding: 19px 18px 17px;
+  min-height: 72px;
+  align-items: flex-start;
+  background: #ffffff;
+  border-bottom: 1px solid #e7e2ea;
+  border-radius: 12px 12px 0 0;
+}
+
+.table-card:has(.risk-review-row) > .card-head > div {
+  min-width: 0;
+}
+
+.table-card:has(.risk-review-row) > .card-head h2 {
+  margin: 0 0 7px;
+  color: #282431;
+  font-size: 16.5px;
+  line-height: 1.25;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.table-card:has(.risk-review-row) > .card-head p {
+  margin: 0;
+  max-width: 760px;
+  color: #716979;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.table-card:has(.risk-review-row) > .card-head .badge {
+  margin-top: 1px;
+  padding: 5px 9px;
+  font-size: 10px;
+}
+
+/*
+ * A normal table-wrap uses overflow:auto. That creates a clipping/stacking
+ * context and causes an open custom dropdown to appear underneath the next
+ * table row. The risk review table needs vertical overflow visible.
+ */
+.table-card:has(.risk-review-row) .table-wrap {
+  position: relative;
+  overflow: visible;
+  border-top: 0;
+}
+
+/* Establish predictable row stacking */
+.risk-review-row {
+  position: relative;
+  z-index: 1;
+}
+
+.risk-review-row td {
+  position: relative;
+  z-index: 1;
+}
+
+/* Lift the complete row whenever one of its dropdowns is open */
+.risk-review-row:has(.custom-select-trigger[aria-expanded="true"]) {
+  z-index: 500;
+}
+
+/* Lift the exact Human Review cell above all later rows */
+.risk-review-row td:has(.custom-select-trigger[aria-expanded="true"]) {
+  z-index: 600;
+}
+
+/* Human review controls */
+.risk-review-actions {
+  position: relative;
+  z-index: 2;
+}
+
+.risk-review-select {
+  position: relative;
+  z-index: 3;
+}
+
+.risk-review-select .custom-select {
+  position: relative;
+  z-index: 4;
+}
+
+/* Open dropdown becomes a true floating surface */
+.risk-review-select .custom-select:has(
+    .custom-select-trigger[aria-expanded="true"]
+  ) {
+  z-index: 1000;
+}
+
+.risk-review-select .custom-select-list {
+  top: calc(100% + 7px);
+  left: 0;
+  right: auto;
+  width: 100%;
+  min-width: 176px;
+  max-height: 230px;
+  padding: 6px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  border: 1px solid #d9d3df;
+  border-radius: 10px;
+  background: #ffffff;
+
+  box-shadow:
+    0 18px 42px rgba(40, 36, 49, 0.18),
+    0 4px 12px rgba(40, 36, 49, 0.08);
+
+  z-index: 9999;
+}
+
+/* Cleaner dropdown options */
+.risk-review-select .custom-select-option {
+  min-height: 38px;
+  padding: 8px 10px;
+  border-radius: 7px;
+
+  color: #372a45;
+  background: #ffffff;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.risk-review-select .custom-select-option + .custom-select-option {
+  margin-top: 2px;
+}
+
+.risk-review-select .custom-select-option:hover,
+.risk-review-select .custom-select-option.active {
+  background: #f4f1f7;
+}
+
+.risk-review-select .custom-select-option[aria-selected="true"] {
+  background: #f0edfb;
+  color: #5b52b0;
+  font-weight: 700;
+}
+
+.risk-review-select .custom-select-option[aria-selected="true"] svg {
+  flex: 0 0 auto;
+  color: #635bb5;
+}
+
+/* Keep the trigger visually crisp when the popup is open */
+.risk-review-select
+  .custom-select-trigger[aria-expanded="true"] {
+  position: relative;
+  z-index: 10000;
+  border-color: #635bb5;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 3px rgba(99, 91, 181, 0.12),
+    0 3px 8px rgba(40, 36, 49, 0.05);
+}
+
+/* Avoid the menu visually merging into the row below */
+.risk-review-row:has(.custom-select-trigger[aria-expanded="true"]) td {
+  background: #ffffff;
+}
+
+/* Horizontal scrolling is still available on smaller enterprise widths */
+@media (max-width: 1100px) {
+  .table-card:has(.risk-review-row) .table-wrap {
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+
+  .table-card:has(.risk-review-row) {
+    overflow-x: visible;
+  }
+}
+

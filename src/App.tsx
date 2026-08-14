@@ -1224,20 +1224,145 @@ function RiskPage() {
     </>
   );
 }
-function RiskReviewRow({ patient, role, onReview, onOpen }: { patient: Patient; role: Role; onReview: (tier: RiskTier) => void; onOpen: () => void }) {
+function RiskReviewRow({
+  patient,
+  role,
+  onReview,
+  onOpen,
+}: {
+  patient: Patient;
+  role: Role;
+  onReview: (tier: RiskTier) => void;
+  onOpen: () => void;
+}) {
   const [tier, setTier] = useState<RiskTier>(patient.risk);
+
+  const unresolvedGaps = patient.gaps.filter(
+    (gap) => gap.status !== "Completed",
+  ).length;
+
+  const signal = patient.signals[0];
+
+  const initials = patient.name
+    .split(" ")
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join("");
+
   return (
-    <tr>
-      <td><b>{patient.name}</b><small>{patient.id}</small></td>
-      <td><RiskTierBadge risk={patient.risk} />{patient.riskReview && <small>Reviewed: {patient.riskReview.reviewed}</small>}</td>
-      <td>{patient.signals[0]?.evidence ?? "No current signal"}<small>{patient.signals[0]?.source}</small></td>
-      <td>{patient.gaps.filter((g) => g.status !== "Completed").length} unresolved</td>
-      <td><Badge tone="green">Current</Badge><small>Latest source {patient.signals[0]?.date}</small></td>
+    <tr className="risk-review-row">
       <td>
-        <CustomSelect ariaLabel={`Human risk review for ${patient.name}`} value={tier} onChange={(value) => setTier(value as RiskTier)} options={["Low", "Moderate", "High", "Priority Review"]} disabled={!can(role, "carePlan")} />
-        <button className="secondary" disabled={!can(role, "carePlan")} onClick={() => onReview(tier)}>{tier === patient.risk ? "Confirm priority" : "Apply change"}</button>
+        <button
+          type="button"
+          className="risk-patient-cell"
+          onClick={onOpen}
+          aria-label={`Open ${patient.name}`}
+        >
+          <span className="risk-patient-avatar">{initials}</span>
+
+          <span className="risk-patient-copy">
+            <b>{patient.name}</b>
+            <small>{patient.id}</small>
+          </span>
+        </button>
       </td>
-      <td><button className="icon-btn" aria-label={`Open ${patient.name}`} onClick={onOpen}><ChevronRight /></button></td>
+
+      <td>
+        <div className="risk-tier-cell">
+          <RiskTierBadge risk={patient.risk} />
+
+          {patient.riskReview && (
+            <small className="risk-reviewed-label">
+              Human reviewed · {patient.riskReview.reviewed}
+            </small>
+          )}
+        </div>
+      </td>
+
+      <td>
+        <div className="risk-evidence-cell">
+          <b>{signal?.evidence ?? "No current signal"}</b>
+
+          <span>
+            {signal?.source ?? "No supporting source"}
+          </span>
+        </div>
+      </td>
+
+      <td>
+        <div className="risk-gap-cell">
+          <span
+            className={
+              unresolvedGaps > 1
+                ? "risk-gap-count attention"
+                : "risk-gap-count"
+            }
+          >
+            {unresolvedGaps}
+          </span>
+
+          <span>
+            {unresolvedGaps === 1 ? "care gap" : "care gaps"}
+          </span>
+        </div>
+      </td>
+
+      <td>
+        <div className="risk-freshness">
+          <span className="risk-freshness-status">
+            <i />
+            Current
+          </span>
+
+          <small>
+            Latest source
+            <b>{signal?.date ?? "Unknown"}</b>
+          </small>
+        </div>
+      </td>
+
+      <td>
+        <div className="risk-review-actions">
+          <div className="risk-review-select">
+            <CustomSelect
+              ariaLabel={`Human risk review for ${patient.name}`}
+              value={tier}
+              onChange={(value) => setTier(value as RiskTier)}
+              options={[
+                "Low",
+                "Moderate",
+                "High",
+                "Priority Review",
+              ]}
+              disabled={!can(role, "carePlan")}
+            />
+          </div>
+
+          <button
+            type="button"
+            className={
+              tier === patient.risk
+                ? "secondary risk-confirm-btn"
+                : "primary risk-confirm-btn"
+            }
+            disabled={!can(role, "carePlan")}
+            onClick={() => onReview(tier)}
+          >
+            {tier === patient.risk ? "Confirm" : "Apply change"}
+          </button>
+        </div>
+      </td>
+
+      <td className="risk-open-cell">
+        <button
+          type="button"
+          className="risk-open-button"
+          aria-label={`Open ${patient.name}`}
+          onClick={onOpen}
+        >
+          <ChevronRight size={18} />
+        </button>
+      </td>
     </tr>
   );
 }
