@@ -1,4 +1,5 @@
 import type { Patient } from "./types";
+
 const gap = (
   id: string,
   type: string,
@@ -14,6 +15,48 @@ const gap = (
   priority,
   history: [{ label: "Potential care gap detected", date: "2026-07-01" }],
 });
+const med = (
+  id: string,
+  name: string,
+  schedule: string,
+  lastRefill: string,
+  gapFlag = false,
+) => ({
+  id,
+  name,
+  schedule,
+  lastRefill,
+  refillIndicator: gapFlag ? ("Potential Gap" as const) : ("Current" as const),
+  reportedAdherence: gapFlag ? ("Requires confirmation" as const) : ("Reported taken" as const),
+  source: "Synthetic Pharmacy History",
+});
+const screening = (id: string, type: string, date: string, status: "Overdue" | "Scheduled" | "Completed") => ({
+  id,
+  type,
+  date,
+  status,
+  source: "Synthetic Screening Registry",
+});
+const encounter = (
+  id: string,
+  date: string,
+  type: "Primary Care" | "Emergency" | "Admission" | "Discharge" | "Specialist",
+  facility: string,
+) => ({ id, date, type, facility, source: "Synthetic Encounter Feed" });
+const lab = (
+  id: string,
+  test: string,
+  result: string,
+  date: string,
+  trend: "Stable" | "Rising" | "Falling" | "Review",
+) => ({ id, test, result, date, source: "Synthetic Laboratory Feed", trend });
+const appt = (
+  id: string,
+  type: string,
+  date: string,
+  status: "Scheduled" | "Completed" | "Missed" | "Overdue",
+) => ({ id, type, date, status, source: "Synthetic Appointment Service" });
+
 export const patients: Patient[] = [
   {
     id: "PH-20418",
@@ -30,6 +73,18 @@ export const patients: Patient[] = [
     admissions: 0,
     status: "Unmanaged",
     gaps: [gap("G-101", "Diabetes Review", "Diabetes", "2026-07-03")],
+    medications: [med("MED-101", "Metformin", "500 mg twice daily — demo record", "2026-06-03", true)],
+    screenings: [screening("SCR-101", "Diabetes Review", "2026-07-03", "Overdue")],
+    encounters: [
+      encounter("ENC-101", "2026-06-30", "Primary Care", "Northshire Primary Care"),
+      encounter("ENC-102", "2026-03-18", "Emergency", "Northshire General"),
+      encounter("ENC-103", "2026-01-07", "Emergency", "Northshire General"),
+    ],
+    labs: [
+      lab("LAB-101", "HbA1c", "8.6% (synthetic)", "2026-06-28", "Rising"),
+      lab("LAB-102", "HbA1c", "7.4% (synthetic)", "2026-03-12", "Stable"),
+    ],
+    appointments: [appt("APT-101", "Diabetes Review", "2026-07-03", "Overdue")],
     signals: [
       {
         title: "Rising synthetic HbA1c trend",
@@ -51,11 +106,7 @@ export const patients: Patient[] = [
       },
     ],
     timeline: [
-      {
-        date: "2026-07-10",
-        type: "Pharmacy",
-        detail: "Potential refill gap detected",
-      },
+      { date: "2026-07-10", type: "Pharmacy", detail: "Potential refill gap detected" },
       { date: "2026-06-28", type: "Lab", detail: "Synthetic HbA1c 8.6%" },
       { date: "2026-06-18", type: "Outreach", detail: "Portal reminder sent" },
     ],
@@ -78,31 +129,25 @@ export const patients: Patient[] = [
       gap("G-102", "Post-discharge Follow-up", "Readmission", "2026-08-09"),
       gap("G-103", "Medication Review", "Cardiovascular", "2026-08-07"),
     ],
+    medications: [med("MED-102", "Cardiovascular therapy", "Per synthetic discharge record", "2026-07-01", true)],
+    screenings: [screening("SCR-102", "Cardiovascular Review", "2026-08-09", "Overdue")],
+    encounters: [
+      encounter("ENC-201", "2026-08-02", "Discharge", "Northshire General"),
+      encounter("ENC-202", "2026-07-29", "Admission", "Northshire General"),
+      encounter("ENC-203", "2026-06-11", "Admission", "Northshire General"),
+      encounter("ENC-204", "2026-05-24", "Emergency", "Northshire General"),
+      encounter("ENC-205", "2026-04-10", "Emergency", "Northshire General"),
+      encounter("ENC-206", "2026-02-06", "Emergency", "Northshire General"),
+    ],
+    labs: [lab("LAB-201", "Renal profile", "Demo result — review", "2026-08-01", "Review")],
+    appointments: [appt("APT-201", "Post-discharge follow-up", "2026-08-09", "Overdue")],
     signals: [
-      {
-        title: "Recent repeat admission",
-        evidence: "2 admissions in 90 days",
-        source: "Encounter Data",
-        date: "2026-08-02",
-      },
-      {
-        title: "Follow-up missing",
-        evidence: "No appointment within demo follow-up window",
-        source: "Appointment Record",
-        date: "2026-08-09",
-      },
+      { title: "Recent repeat admission", evidence: "2 admissions in 90 days", source: "Encounter Data", date: "2026-08-02" },
+      { title: "Follow-up missing", evidence: "No appointment within demo follow-up window", source: "Appointment Record", date: "2026-08-09" },
     ],
     timeline: [
-      {
-        date: "2026-08-02",
-        type: "Admission",
-        detail: "Discharged after 4-day synthetic stay",
-      },
-      {
-        date: "2026-06-11",
-        type: "Admission",
-        detail: "Cardiovascular admission",
-      },
+      { date: "2026-08-02", type: "Admission", detail: "Discharged after 4-day synthetic stay" },
+      { date: "2026-06-11", type: "Admission", detail: "Cardiovascular admission" },
     ],
   },
   {
@@ -120,27 +165,18 @@ export const patients: Patient[] = [
     admissions: 0,
     status: "Unmanaged",
     gaps: [gap("G-104", "Blood Pressure Review", "Hypertension", "2026-07-15")],
+    medications: [med("MED-301", "Antihypertensive therapy", "Per synthetic medication list", "2026-07-09")],
+    screenings: [screening("SCR-301", "Blood Pressure Review", "2026-07-15", "Overdue")],
+    encounters: [encounter("ENC-301", "2026-07-22", "Primary Care", "Northshire Primary Care")],
+    labs: [lab("LAB-301", "Synthetic BP summary", "166/96", "2026-07-22", "Rising")],
+    appointments: [appt("APT-301", "Blood Pressure Review", "2026-07-15", "Overdue")],
     signals: [
-      {
-        title: "Repeated elevated synthetic BP",
-        evidence: "Three readings above configured demo threshold",
-        source: "EHR Observations",
-        date: "2026-07-22",
-      },
-      {
-        title: "Review overdue",
-        evidence: "No recent monitoring review",
-        source: "Appointment Record",
-        date: "2026-07-15",
-      },
+      { title: "Repeated elevated synthetic BP", evidence: "Three readings above configured demo threshold", source: "EHR Observations", date: "2026-07-22" },
+      { title: "Review overdue", evidence: "No recent monitoring review", source: "Appointment Record", date: "2026-07-15" },
     ],
     timeline: [
       { date: "2026-07-22", type: "Encounter", detail: "Synthetic BP 166/96" },
-      {
-        date: "2026-06-25",
-        type: "Outreach",
-        detail: "Phone contact completed",
-      },
+      { date: "2026-06-25", type: "Outreach", detail: "Phone contact completed" },
     ],
   },
   {
@@ -157,24 +193,14 @@ export const patients: Patient[] = [
     edVisits: 0,
     admissions: 0,
     status: "Unmanaged",
-    gaps: [
-      gap("G-105", "Cardiovascular Review", "Cardiovascular", "2026-06-01"),
-    ],
-    signals: [
-      {
-        title: "Preventive screening gap",
-        evidence: "Review overdue in demo schedule",
-        source: "Screening Record",
-        date: "2026-06-01",
-      },
-    ],
-    timeline: [
-      {
-        date: "2026-05-18",
-        type: "Encounter",
-        detail: "Primary care encounter",
-      },
-    ],
+    gaps: [gap("G-105", "Cardiovascular Review", "Cardiovascular", "2026-06-01")],
+    medications: [med("MED-401", "No active medication concern", "Synthetic medication list", "2026-07-21")],
+    screenings: [screening("SCR-401", "Cardiovascular Review", "2026-06-01", "Overdue")],
+    encounters: [encounter("ENC-401", "2026-05-18", "Primary Care", "Northshire Primary Care")],
+    labs: [lab("LAB-401", "Lipid profile", "Synthetic result", "2026-04-21", "Stable")],
+    appointments: [appt("APT-401", "Cardiovascular Review", "2026-06-01", "Overdue")],
+    signals: [{ title: "Preventive screening gap", evidence: "Review overdue in demo schedule", source: "Screening Record", date: "2026-06-01" }],
+    timeline: [{ date: "2026-05-18", type: "Encounter", detail: "Primary care encounter" }],
   },
   {
     id: "PH-22691",
@@ -190,30 +216,14 @@ export const patients: Patient[] = [
     edVisits: 0,
     admissions: 0,
     status: "Active Management",
-    gaps: [
-      gap(
-        "G-106",
-        "Cardiovascular Review",
-        "Cardiovascular",
-        "2026-07-20",
-        "Medium",
-      ),
-    ],
-    signals: [
-      {
-        title: "Screening due",
-        evidence: "No completed review in current demo period",
-        source: "Screening Record",
-        date: "2026-07-20",
-      },
-    ],
-    timeline: [
-      {
-        date: "2026-07-30",
-        type: "Outreach",
-        detail: "Patient portal message opened",
-      },
-    ],
+    gaps: [gap("G-106", "Cardiovascular Review", "Cardiovascular", "2026-07-20", "Medium")],
+    medications: [med("MED-501", "Diabetes therapy", "Synthetic medication list", "2026-07-20")],
+    screenings: [screening("SCR-501", "Cardiovascular Review", "2026-07-20", "Overdue")],
+    encounters: [encounter("ENC-501", "2026-07-28", "Primary Care", "Northshire Primary Care")],
+    labs: [lab("LAB-501", "HbA1c", "7.1% (synthetic)", "2026-07-20", "Stable")],
+    appointments: [appt("APT-501", "Cardiovascular Review", "2026-08-22", "Scheduled")],
+    signals: [{ title: "Screening due", evidence: "No completed review in current demo period", source: "Screening Record", date: "2026-07-20" }],
+    timeline: [{ date: "2026-07-30", type: "Outreach", detail: "Patient portal message opened" }],
   },
   {
     id: "PH-23012",
@@ -233,24 +243,27 @@ export const patients: Patient[] = [
       gap("G-107", "Care Plan Missing", "Utilization", "2026-07-01"),
       gap("G-108", "Post-discharge Follow-up", "Readmission", "2026-08-12"),
     ],
-    signals: [
-      {
-        title: "Repeated emergency utilization",
-        evidence: "5 ED visits in six months",
-        source: "Encounter Data",
-        date: "2026-08-08",
-      },
+    medications: [med("MED-601", "Respiratory therapy", "Synthetic medication list", "2026-06-14", true)],
+    screenings: [screening("SCR-601", "General Preventive Screening", "2026-07-01", "Overdue")],
+    encounters: [
+      encounter("ENC-601", "2026-08-08", "Emergency", "Northshire General"),
+      encounter("ENC-602", "2026-07-17", "Admission", "Northshire General"),
+      encounter("ENC-603", "2026-06-28", "Emergency", "Northshire General"),
+      encounter("ENC-604", "2026-05-19", "Emergency", "Northshire General"),
+      encounter("ENC-605", "2026-04-16", "Emergency", "Northshire General"),
+      encounter("ENC-606", "2026-02-12", "Emergency", "Northshire General"),
+      encounter("ENC-607", "2026-01-20", "Admission", "Northshire General"),
     ],
+    labs: [lab("LAB-601", "Recent-care completeness", "Review data coverage", "2026-08-08", "Review")],
+    appointments: [appt("APT-601", "Post-discharge Follow-up", "2026-08-12", "Overdue")],
+    signals: [{ title: "Repeated emergency utilization", evidence: "5 ED visits in six months", source: "Encounter Data", date: "2026-08-08" }],
     timeline: [
-      {
-        date: "2026-08-08",
-        type: "Emergency",
-        detail: "Fifth synthetic ED encounter",
-      },
+      { date: "2026-08-08", type: "Emergency", detail: "Fifth synthetic ED encounter" },
       { date: "2026-07-17", type: "Admission", detail: "Two-day admission" },
     ],
   },
 ];
+
 export const aggregate = {
   population: 128420,
   diabetes: 4281,
@@ -262,10 +275,10 @@ export const aggregate = {
   highUtilization: 936,
 };
 export const trend = [
-  { month: "Mar", gaps: 11620, closed: 680 },
-  { month: "Apr", gaps: 11180, closed: 820 },
-  { month: "May", gaps: 10640, closed: 1040 },
-  { month: "Jun", gaps: 10120, closed: 1260 },
-  { month: "Jul", gaps: 9540, closed: 1510 },
-  { month: "Aug", gaps: 9184, closed: 1738 },
+  { month: "Mar", gaps: 11620, closed: 680, highRisk: 14690, screening: 59, outreach: 980, readmission: 1318, utilization: 1012 },
+  { month: "Apr", gaps: 11180, closed: 820, highRisk: 14420, screening: 62, outreach: 1120, readmission: 1294, utilization: 998 },
+  { month: "May", gaps: 10640, closed: 1040, highRisk: 14210, screening: 65, outreach: 1380, readmission: 1268, utilization: 982 },
+  { month: "Jun", gaps: 10120, closed: 1260, highRisk: 14090, screening: 67, outreach: 1640, readmission: 1246, utilization: 970 },
+  { month: "Jul", gaps: 9540, closed: 1510, highRisk: 13980, screening: 70, outreach: 1880, readmission: 1228, utilization: 954 },
+  { month: "Aug", gaps: 9184, closed: 1738, highRisk: 13980, screening: 72, outreach: 2106, readmission: 1203, utilization: 936 },
 ];

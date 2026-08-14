@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -141,6 +141,7 @@ describe("route-level product QA", () => {
   });
   it("exercises explicit source loading, error, and recovery states", () => {
     vi.useFakeTimers();
+    useAppStore.getState().setRole("Administrator");
     renderRoute("/data-sources");
     fireEvent.click(screen.getByRole("button", { name: "Refresh all" }));
     expect(screen.getByRole("status").textContent).toContain(
@@ -157,4 +158,53 @@ describe("route-level product QA", () => {
     expect(screen.queryByRole("alert")).toBeNull();
     vi.useRealTimers();
   });
+
+  it("uses custom dropdowns instead of native HTML selects", () => {
+    const { container } = renderRoute("/patients");
+    expect(container.querySelectorAll("select")).toHaveLength(0);
+    const riskControl = screen.getByRole("button", { name: "Filter by risk" });
+    fireEvent.click(riskControl);
+    fireEvent.click(screen.getByRole("option", { name: "High" }));
+    expect(riskControl).toHaveTextContent("High");
+  });
+
+  it("supports keyboard navigation on the custom role dropdown", () => {
+    renderRoute("/");
+    const roleControl = screen.getByRole("button", { name: "Current role" });
+    fireEvent.keyDown(roleControl, { key: "ArrowDown" });
+    expect(roleControl).toHaveAttribute("aria-expanded", "true");
+    fireEvent.keyDown(roleControl, { key: "End" });
+    fireEvent.keyDown(roleControl, { key: "Enter" });
+    expect(useAppStore.getState().role).toBe("Administrator");
+  });
+
+  it("renders patient-specific medication, screening and utilization tabs", () => {
+    renderRoute("/patients/PH-20418");
+    fireEvent.click(screen.getByRole("button", { name: "Medications" }));
+    expect(screen.getByText("Metformin")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Screenings" }));
+    expect(screen.getByText("Diabetes Review")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Utilization" }));
+    expect(screen.getByText(/2 ED visits/)).toBeTruthy();
+  });
+
+  it("renders a recoverable not-found state for unknown routes", () => {
+    renderRoute("/does-not-exist");
+    expect(screen.getByRole("heading", { name: "Page not found", level: 1 })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Return to Population Overview" })).toBeTruthy();
+  });
+
+  it("opens source evidence as an accessible dialog and closes with Escape", () => {
+    renderRoute("/patients/PH-20418");
+    const opener = screen.getByRole("button", { name: "View source evidence" });
+    opener.focus();
+    fireEvent.click(opener);
+    const dialog = screen.getByRole("dialog", { name: "Maria Collins — source evidence" });
+    expect(dialog.contains(document.activeElement)).toBe(true);
+    expect(within(dialog).getByText("Rising synthetic HbA1c trend")).toBeTruthy();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog", { name: "Maria Collins — source evidence" })).toBeNull();
+    expect(document.activeElement).toBe(opener);
+  });
+
 });

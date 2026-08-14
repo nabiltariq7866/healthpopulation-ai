@@ -28,9 +28,9 @@ test("diabetes: population to outreach, assignment and scheduled care gap", asyn
     .click();
   await page.getByRole("button", { name: "Assign manager" }).click();
   await page.getByRole("button", { name: "Schedule" }).click();
-  await expect(
-    page.getByText("Scheduled", { exact: true }).first(),
-  ).toBeVisible();
+  await expect(page.getByRole("dialog", { name: /Schedule Diabetes Review/ })).toBeVisible();
+  await page.getByRole("button", { name: "Schedule review" }).click();
+  await expect(page.getByText("Scheduled", { exact: true }).first()).toBeVisible();
   await page.getByRole("link", { name: "Outreach" }).click();
   await expect(
     page.getByRole("cell", { name: "Diabetes Review" }).first(),
@@ -71,4 +71,17 @@ test("cohort builder: save, open and add selected patient to campaign", async ({
   await expect(
     page.getByText("Selected Registry Patients · 1 targeted"),
   ).toBeVisible();
+});
+
+test("custom dropdowns: registry filters and role switching use accessible listboxes", async ({ page }) => {
+  await page.goto("/patients");
+  await expect(page.locator("select")).toHaveCount(0);
+  const risk = page.getByRole("button", { name: "Filter by risk" });
+  await risk.click();
+  await page.getByRole("option", { name: "High" }).click();
+  await expect(risk).toContainText("High");
+  const role = page.getByRole("button", { name: "Current role" });
+  await role.click();
+  await page.getByRole("option", { name: "Administrator" }).click();
+  await expect(role).toContainText("Administrator");
 });

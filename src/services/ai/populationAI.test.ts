@@ -80,6 +80,7 @@ describe("connected workflow regression", () => {
       owner: "Olivia Bennett",
       due: "2026-08-18",
       priority: "High",
+      source: "Test fixture",
       status: "Open",
     });
     const id = useAppStore.getState().tasks[0].id;
@@ -236,4 +237,98 @@ describe("connected workflow regression", () => {
       ).toEqual(expected),
     );
   });
+});
+
+describe("final prompt-compliance regressions", () => {
+  beforeEach(() => {
+    useAppStore.getState().reset();
+    useAppStore.getState().setRole("Population Health Director");
+  });
+
+  it("blocks unauthorized store mutations and records the actual simulated actor", () => {
+    useAppStore.getState().setRole("Analyst");
+    useAppStore.getState().createOutreach({
+      patientId: "PH-20418",
+      reason: "Blocked outreach",
+      channel: "Phone",
+      owner: "Olivia Bennett",
+      status: "Planned",
+      followUp: "2026-08-20",
+    });
+    expect(useAppStore.getState().outreach).toHaveLength(0);
+    useAppStore.getState().setRole("Care Manager");
+    useAppStore.getState().assignManager("PH-20418", "Olivia Bennett");
+    expect(useAppStore.getState().audit[0]).toMatchObject({
+      user: "Olivia Bennett",
+      role: "Care Manager",
+      action: "Care manager assigned",
+    });
+  });
+
+  it("creates a structured care plan with a linked follow-up task", () => {
+    useAppStore.getState().createCarePlan("PH-20418");
+    const plan = useAppStore.getState().carePlans.find((item) => item.patientId === "PH-20418");
+    expect(plan).toMatchObject({ status: "Active", owner: expect.any(String) });
+    expect(plan?.goals.length).toBeGreaterThan(0);
+    expect(plan?.monitoring.length).toBeGreaterThan(0);
+    expect(plan?.taskIds.length).toBe(1);
+    expect(useAppStore.getState().tasks.some((task) => plan?.taskIds.includes(task.id))).toBe(true);
+  });
+
+  it("persists outreach follow-up and synchronizes contacted state to the patient timeline", () => {
+    useAppStore.getState().createOutreach({
+      patientId: "PH-20418",
+      reason: "Diabetes Review",
+      channel: "Patient Portal",
+      owner: "Olivia Bennett",
+      status: "Planned",
+      followUp: "2026-08-29",
+    });
+    const item = useAppStore.getState().outreach[0];
+    expect(item.followUp).toBe("2026-08-29");
+    useAppStore.getState().updateOutreach(item.id, "Contacted");
+    const patient = useAppStore.getState().patients.find((p) => p.id === "PH-20418")!;
+    expect(patient.lastContact).toBe(new Date().toISOString().slice(0, 10));
+    expect(patient.timeline[0].detail).toContain("Contacted");
+  });
+
+  it("simulates deterministic campaign responses and updates detailed screening state", () => {
+    const id = useAppStore.getState().campaigns[0].id;
+    useAppStore.getState().launchCampaign(id);
+    useAppStore.getState().simulateCampaign(id);
+    const aisha = useAppStore.getState().patients.find((p) => p.id === "PH-22146")!;
+    expect(aisha.gaps[0].status).toBe("Scheduled");
+    expect(useAppStore.getState().campaignResponses.some((response) => response.patientId === "PH-22146")).toBe(true);
+  });
+
+  it("requires Administrator for data-source simulation", () => {
+    const before = useAppStore.getState().dataSources.find((source) => source.id === "SRC-LAB")!.status;
+    useAppStore.getState().setRole("Analyst");
+    useAppStore.getState().setDataSourceStatus("SRC-LAB", "Attention Required");
+    expect(useAppStore.getState().dataSources.find((source) => source.id === "SRC-LAB")!.status).toBe(before);
+    useAppStore.getState().setRole("Administrator");
+    useAppStore.getState().setDataSourceStatus("SRC-LAB", "Attention Required");
+    expect(useAppStore.getState().dataSources.find((source) => source.id === "SRC-LAB")!.status).toBe("Attention Required");
+  });
+
+  it("preserves the AI-assisted risk tier when a human confirms or changes priority", () => {
+    useAppStore.getState().updateRiskPriority("PH-20418", "High", "Reviewed current evidence");
+    let patient = useAppStore.getState().patients.find((p) => p.id === "PH-20418")!;
+    expect(patient.riskReview).toMatchObject({ original: "High", reviewed: "High" });
+    useAppStore.getState().updateRiskPriority("PH-20418", "Moderate", "Care team reviewed current context");
+    patient = useAppStore.getState().patients.find((p) => p.id === "PH-20418")!;
+    expect(patient.risk).toBe("Moderate");
+    expect(patient.riskReview?.reason).toContain("Care team reviewed");
+  });
+});
+
+it("schedules a care gap with the selected date and synchronizes appointment/screening state", () => {
+  useAppStore.getState().reset();
+  useAppStore.getState().setRole("Population Health Director");
+  useAppStore.getState().scheduleGap("PH-20418", "G-101", "2026-08-28");
+  const patient = useAppStore.getState().patients.find((p) => p.id === "PH-20418")!;
+  expect(patient.gaps[0].status).toBe("Scheduled");
+  expect(patient.screenings[0]).toMatchObject({ status: "Scheduled", date: "2026-08-28" });
+  expect(patient.appointments.some((appointment) => appointment.date === "2026-08-28" && appointment.status === "Scheduled")).toBe(true);
+  expect(useAppStore.getState().audit[0].action).toContain("Screening scheduled");
 });

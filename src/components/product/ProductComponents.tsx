@@ -1,5 +1,6 @@
 import type { CareGap, Patient, RiskTier } from "../../types";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { CustomSelect } from "../ui/CustomSelect";
 
 type Tone = "blue" | "green" | "gold" | "rose" | "violet";
 const SemanticBadge = ({
@@ -172,26 +173,27 @@ export function CampaignPerformance({
   delivered,
   responses,
   scheduled,
+  completed = 0,
+  noResponse = 0,
+  optedOut = 0,
 }: {
   targeted: number;
   delivered: number;
   responses: number;
   scheduled: number;
+  completed?: number;
+  noResponse?: number;
+  optedOut?: number;
 }) {
   return (
     <div className="campaign-metrics">
-      <span>
-        <b>{targeted}</b>Targeted
-      </span>
-      <span>
-        <b>{delivered}</b>Delivered
-      </span>
-      <span>
-        <b>{responses}</b>Responses
-      </span>
-      <span>
-        <b>{scheduled}</b>Scheduled
-      </span>
+      <span><b>{targeted}</b>Targeted</span>
+      <span><b>{delivered}</b>Delivered</span>
+      <span><b>{responses}</b>Responses</span>
+      <span><b>{scheduled}</b>Scheduled</span>
+      <span><b>{completed}</b>Completed</span>
+      <span><b>{noResponse}</b>No response</span>
+      <span><b>{optedOut}</b>Opted out</span>
     </div>
   );
 }
@@ -213,14 +215,12 @@ export function CohortBuilderRule({
       <span>{index}</span>
       <label>
         {field}
-        <select
+        <CustomSelect
           value={value}
-          onChange={(event) => onChange(event.target.value)}
-        >
-          {options.map((option) => (
-            <option key={option}>{option}</option>
-          ))}
-        </select>
+          options={options}
+          onChange={onChange}
+          ariaLabel={`${field} cohort rule`}
+        />
       </label>
       <SemanticBadge>{index === 1 ? "WHERE" : "AND"}</SemanticBadge>
     </div>
@@ -237,24 +237,66 @@ export function SourceEvidenceDrawer({
   evidence: Patient["signals"];
   onClose: () => void;
 }) {
+  const drawerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const focusable = () =>
+      Array.from(
+        drawer.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+    focusable()[0]?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const items = focusable();
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previous?.focus();
+    };
+  }, [open, onClose]);
+
   if (!open) return null;
   return (
-    <aside className="modal" role="dialog" aria-modal="true" aria-label={title}>
-      <button className="modal-x" onClick={onClose} aria-label="Close evidence">
-        ×
-      </button>
-      <h2>{title}</h2>
-      {evidence.map((item) => (
-        <div className="gap" key={item.title}>
-          <div>
-            <b>{item.title}</b>
-            <small>
-              {item.source} · {item.date}
-            </small>
+    <div className="overlay" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <aside ref={drawerRef} className="modal evidence-drawer" role="dialog" aria-modal="true" aria-label={title}>
+        <button className="modal-x" onClick={onClose} aria-label="Close evidence">
+          ×
+        </button>
+        <h2>{title}</h2>
+        {evidence.length ? evidence.map((item) => (
+          <div className="gap" key={`${item.title}-${item.source}-${item.date}`}>
+            <div>
+              <b>{item.title}</b>
+              <small>
+                {item.source} · {item.date}
+              </small>
+            </div>
           </div>
-        </div>
-      ))}
-    </aside>
+        )) : <p className="empty-state">No supporting synthetic source records are available.</p>}
+      </aside>
+    </div>
   );
 }
 export function CareManagerCard({
