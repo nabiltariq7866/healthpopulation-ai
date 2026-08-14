@@ -1656,3 +1656,445 @@ textarea:focus-visible { outline: 3px solid #635bb533; outline-offset: 2px; }
 
 .evidence-drawer { width: min(620px, calc(100vw - 32px)); max-height: min(760px, calc(100vh - 48px)); overflow: auto; }
 .empty-state-card { max-width: 720px; margin: 48px auto; text-align: center; }
+
+/* =========================================================
+   GLOBAL TYPOGRAPHY READABILITY UPGRADE
+   Slightly larger enterprise typography across the product.
+   Added during manual UI QA to improve readability while
+   preserving the existing HealthPopulation visual hierarchy.
+   ========================================================= */
+
+body {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* ---------- Sidebar ---------- */
+
+.brand b {
+  font-size: 16px;
+}
+
+.brand div > span {
+  font-size: 13px;
+}
+
+.brand small {
+  font-size: 11px;
+}
+
+.sidebar label {
+  font-size: 10px;
+}
+
+.sidebar a {
+  font-size: 13.5px;
+}
+
+.sidebar-foot b,
+.sidebar-foot small {
+  font-size: 12px;
+}
+
+/* ---------- Top bar ---------- */
+
+.org b {
+  font-size: 13px;
+}
+
+.org small {
+  font-size: 11px;
+}
+
+.global-search input {
+  font-size: 13px;
+}
+
+.search-results b {
+  font-size: 13px;
+}
+
+.search-results span {
+  font-size: 11px;
+}
+
+.period {
+  font-size: 12px;
+}
+
+.current-user b {
+  font-size: 12px;
+}
+
+.current-user small {
+  font-size: 10px;
+}
+
+.notifications b,
+.notifications span {
+  font-size: 11px;
+}
+
+/* ---------- Page headings ---------- */
+
+.eyebrow {
+  font-size: 11px;
+}
+
+.page-head p,
+.patient-head p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.page-head h1,
+.patient-head h1 {
+  font-size: 29px;
+}
+
+/* ---------- Buttons ---------- */
+
+.primary,
+.secondary,
+.danger {
+  font-size: 12px;
+}
+
+.text-link {
+  font-size: 12px;
+}
+
+/* ---------- KPI cards ---------- */
+
+.stat-label {
+  font-size: 12px;
+}
+
+.stat > b {
+  font-size: 25px;
+}
+
+.stat small {
+  font-size: 11px;
+}
+
+/* ---------- General cards ---------- */
+
+.card h2 {
+  font-size: 16px;
+}
+
+.card h3 {
+  font-size: 14px;
+}
+
+.card > p,
+.card-head p {
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+/* ---------- Badges ---------- */
+
+.badge {
+  font-size: 10.5px;
+}
+
+/* ---------- Charts / legends ---------- */
+
+.legend span {
+  font-size: 10px;
+}
+
+.legend b {
+  font-size: 12px;
+}
+
+.recharts-cartesian-axis-tick text {
+  font-size: 10px;
+}
+
+/* ---------- AI cards ---------- */
+
+.ai-title small {
+  font-size: 10px;
+}
+
+.ai-card > p {
+  font-size: 13px;
+}
+
+.recommend small {
+  font-size: 9.5px;
+}
+
+.recommend p {
+  font-size: 11.5px !important;
+  line-height: 1.55;
+}
+
+.evidence span {
+  font-size: 10px;
+}
+
+.ai-card footer,
+.disclaimer {
+  font-size: 10px;
+}
+
+/* ---------- Chronic disease cards ---------- */
+
+.disease-top > b {
+  font-size: 12.5px;
+}
+
+.disease-top > span:last-child {
+  font-size: 10.5px;
+}
+
+.disease dt {
+  font-size: 10.5px;
+}
+
+.disease dd {
+  font-size: 11.5px;
+}
+
+.disease dl div {
+  padding: 5px 0;
+}
+
+/* ---------- Data / settings cards ---------- */
+
+.source dt,
+.settings-list dt {
+  font-size: 10.5px;
+}
+
+.source dd,
+.settings-list dd {
+  font-size: 11.5px;
+}
+
+/* ---------- Toolbar / filters ---------- */
+
+.toolbar input {
+  font-size: 12px;
+}
+
+.muted {
+  font-size: 11px;
+}
+
+.bulk-bar b {
+  font-size: 11px;
+}
+
+/* ---------- Custom dropdowns ---------- */
+
+.custom-select {
+  font-size: 13px;
+}
+
+.custom-select-trigger {
+  font-size: 13px;
+}
+
+.custom-select-option {
+  font-size: 13px;
+}
+
+/* ---------- Tables ---------- */
+
+th {
+  font-size: 10.5px;
+}
+
+td {
+  font-size: 12px;
+}
+
+td small {
+  font-size: 10px;
+}
+
+.patient-link b {
+  font-size: 12px;
+}
+
+.patient-link small {
+  font-size: 10px;
+}
+
+.patient-link > span {
+  font-size: 10px;
+}
+
+.pagination span {
+  font-size: 10.5px;
+}
+
+/* ---------- Patient detail ---------- */
+
+.patient-status span {
+  font-size: 10.5px;
+}
+
+.patient-status b {
+  font-size: 11.5px;
+}
+
+.tabs button {
+  font-size: 11.5px;
+}
+
+.signals b {
+  font-size: 12px;
+}
+
+.signals p {
+  font-size: 11.5px;
+}
+
+.signals small {
+  font-size: 10px;
+}
+
+.gap b {
+  font-size: 11.5px;
+}
+
+.gap small {
+  font-size: 10.5px;
+}
+
+.status-block small {
+  font-size: 10px;
+}
+
+.status-block b {
+  font-size: 11px;
+}
+
+/* ---------- Timeline ---------- */
+
+.timeline time {
+  font-size: 10px;
+}
+
+.timeline b {
+  font-size: 11.5px;
+}
+
+.timeline p {
+  font-size: 11px;
+}
+
+.timeline-row time {
+  font-size: 12px;
+}
+
+.timeline-row p {
+  font-size: 12px;
+}
+
+/* ---------- Modal / Forms ---------- */
+
+.modal > p {
+  font-size: 12px;
+}
+
+.modal label {
+  font-size: 11.5px;
+}
+
+.modal input,
+.modal textarea {
+  font-size: 13px;
+}
+
+/* ---------- Cohorts ---------- */
+
+.rule label {
+  font-size: 10.5px;
+}
+
+.rule > span {
+  font-size: 10px;
+}
+
+.cohort-result small {
+  font-size: 9.5px;
+}
+
+.cohort-result span {
+  font-size: 10.5px;
+}
+
+.saved-cohort b {
+  font-size: 11.5px;
+}
+
+.saved-cohort small {
+  font-size: 10px;
+}
+
+.saved-cohort.detailed p {
+  font-size: 11.5px;
+}
+
+.cohort-mini-metrics span {
+  font-size: 11.5px;
+}
+
+/* ---------- Campaigns ---------- */
+
+.campaign p {
+  font-size: 10.5px;
+}
+
+.campaign-metrics span {
+  font-size: 9.5px;
+}
+
+.campaign-metrics b {
+  font-size: 13px;
+}
+
+.response-list span {
+  font-size: 11.5px;
+}
+
+/* ---------- Care plans ---------- */
+
+.plan-row b {
+  font-size: 12px;
+}
+
+.plan-row small {
+  font-size: 10.5px;
+}
+
+.linked-tasks span,
+.linked-tasks small {
+  font-size: 11.5px;
+}
+
+/* ---------- Misc ---------- */
+
+.hint {
+  font-size: 10.5px;
+}
+
+.empty p {
+  font-size: 11.5px;
+}
+
+.record-row {
+  font-size: 12px;
+}
+
+.record-row small {
+  font-size: 10.5px;
+}
+
