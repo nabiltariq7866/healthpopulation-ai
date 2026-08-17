@@ -2400,33 +2400,33 @@ td small {
 
 /* Better column sizing */
 
-.table-card th:nth-child(1),
-.table-card td:nth-child(1) {
+.table-card:has(.risk-review-row) th:nth-child(1),
+.table-card:has(.risk-review-row) td:nth-child(1) {
   width: 16%;
 }
 
-.table-card th:nth-child(2),
-.table-card td:nth-child(2) {
+.table-card:has(.risk-review-row) th:nth-child(2),
+.table-card:has(.risk-review-row) td:nth-child(2) {
   width: 13%;
 }
 
-.table-card th:nth-child(3),
-.table-card td:nth-child(3) {
+.table-card:has(.risk-review-row) th:nth-child(3),
+.table-card:has(.risk-review-row) td:nth-child(3) {
   width: 27%;
 }
 
-.table-card th:nth-child(4),
-.table-card td:nth-child(4) {
+.table-card:has(.risk-review-row) th:nth-child(4),
+.table-card:has(.risk-review-row) td:nth-child(4) {
   width: 11%;
 }
 
-.table-card th:nth-child(5),
-.table-card td:nth-child(5) {
+.table-card:has(.risk-review-row) th:nth-child(5),
+.table-card:has(.risk-review-row) td:nth-child(5) {
   width: 13%;
 }
 
-.table-card th:nth-child(6),
-.table-card td:nth-child(6) {
+.table-card:has(.risk-review-row) th:nth-child(6),
+.table-card:has(.risk-review-row) td:nth-child(6) {
   width: 20%;
 }
 
@@ -2642,6 +2642,1356 @@ td small {
 
   .table-card:has(.risk-review-row) {
     overflow-x: visible;
+  }
+}
+
+/* =========================================================
+   COHORT BUILDER — RULE CARD ALIGNMENT FIX
+   Manual UI QA
+   ========================================================= */
+
+.cohort-rule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+
+.rule {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  grid-template-areas: "number field";
+  align-items: start;
+  gap: 11px;
+
+  min-width: 0;
+  margin: 0;
+  padding: 14px 48px 14px 12px;
+
+  background: #faf9fb;
+  border: 1px solid #e3dfe7;
+  border-radius: 10px;
+
+  overflow: visible;
+}
+
+/* Number indicator stays fully inside the card */
+.rule > span:first-child {
+  grid-area: number;
+
+  width: 26px;
+  height: 26px;
+  margin-top: 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #372a45;
+  color: #ffffff;
+
+  font-size: 10.5px;
+  font-weight: 750;
+  line-height: 1;
+
+  flex: 0 0 26px;
+}
+
+/* Rule field */
+.rule > label {
+  grid-area: field;
+
+  display: block;
+  min-width: 0;
+
+  color: #6d6675;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Custom dropdown should own the complete available field width */
+.rule > label .custom-select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin-top: 7px;
+}
+
+.rule > label .custom-select-trigger {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+
+  padding: 0 12px;
+
+  border: 1px solid #d9d4df;
+  border-radius: 9px;
+  background: #ffffff;
+
+  color: #332c3b;
+  font-size: 12px;
+
+  box-shadow: none;
+}
+
+.rule > label .custom-select-trigger:hover {
+  border-color: #c9c2d1;
+  background: #ffffff;
+}
+
+.rule > label .custom-select-trigger[aria-expanded="true"] {
+  border-color: #635bb5;
+  box-shadow: 0 0 0 3px rgba(99, 91, 181, 0.11);
+}
+
+/* WHERE / AND becomes a small fixed pill inside top-right of card */
+.rule > .badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  min-width: 34px;
+  height: 22px;
+  padding: 0 7px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background: #f0eef8;
+  color: #5d54a9;
+
+  border: 0;
+
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.025em;
+  line-height: 1;
+
+  white-space: nowrap;
+  z-index: 2;
+}
+
+/* Open custom menu above neighboring rule cards */
+.rule:has(.custom-select-trigger[aria-expanded="true"]) {
+  z-index: 50;
+}
+
+.rule .custom-select {
+  position: relative;
+}
+
+.rule .custom-select-list {
+  z-index: 5000;
+}
+
+/* Cohort Builder card itself */
+.builder {
+  overflow: visible;
+}
+
+.builder > .card-head {
+  margin-bottom: 16px;
+}
+
+.builder > .card-head h2 {
+  margin-bottom: 6px;
+}
+
+.builder > .card-head p {
+  line-height: 1.45;
+}
+
+/* Keep result panel visually separated from rules */
+.builder .cohort-result {
+  margin-top: 16px;
+}
+
+/* Saved cohorts side remains aligned with the builder */
+.cohort-layout {
+  align-items: start;
+}
+
+/* At narrower widths use one rule per row */
+@media (max-width: 1180px) {
+  .cohort-rule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rule {
+    padding-right: 54px;
+  }
+}
+
+/* =========================================================
+   TABLE CARD — GENERIC HEADER + ADHERENCE TABLE FIX
+   Prevent risk-specific layout rules leaking into other tables.
+   ========================================================= */
+
+/* All standard table cards need a proper padded section header. */
+.table-card > .card-head {
+  margin: 0;
+  padding: 18px 18px 16px;
+  min-height: 72px;
+  align-items: flex-start;
+  background: #ffffff;
+  border-bottom: 1px solid #e7e2ea;
+}
+
+.table-card > .card-head > div {
+  min-width: 0;
+}
+
+.table-card > .card-head h2 {
+  margin: 0 0 7px;
+  color: #282431;
+  font-size: 16px;
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.table-card > .card-head p {
+  margin: 0;
+  color: #716979;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.table-card > .card-head > .badge {
+  margin-top: 0;
+  flex: 0 0 auto;
+}
+
+/* Standard non-risk tables should size by content, not Risk Review widths. */
+.table-card:not(:has(.risk-review-row)) table {
+  width: 100%;
+  table-layout: auto;
+}
+
+.table-card:not(:has(.risk-review-row)) th,
+.table-card:not(:has(.risk-review-row)) td {
+  width: auto;
+}
+
+/* Medication Adherence cohort table refinements. */
+.table-card:has(.disclaimer) thead th {
+  padding: 13px 13px;
+  background: #f7f5f9;
+  color: #6f6677;
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: 0.025em;
+  line-height: 1.25;
+  white-space: nowrap;
+  border-bottom: 1px solid #ded9e3;
+}
+
+.table-card:has(.disclaimer) tbody td {
+  padding: 14px 13px;
+  min-height: 62px;
+  vertical-align: middle;
+  color: #3b3442;
+  font-size: 12px;
+  line-height: 1.45;
+  border-bottom: 1px solid #ebe7ee;
+}
+
+.table-card:has(.disclaimer) tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table-card:has(.disclaimer) tbody tr {
+  transition: background-color 140ms ease;
+}
+
+.table-card:has(.disclaimer) tbody tr:hover {
+  background: #fbfafc;
+}
+
+/* Patient hierarchy */
+.table-card:has(.disclaimer) tbody td:first-child b {
+  display: block;
+  margin-bottom: 3px;
+  color: #2c2632;
+  font-size: 12.5px;
+  font-weight: 750;
+}
+
+.table-card:has(.disclaimer) tbody td:first-child small {
+  display: block;
+  color: #817987;
+  font-size: 10px;
+}
+
+/* Keep badge columns compact instead of stretching. */
+.table-card:has(.disclaimer) th:nth-child(3),
+.table-card:has(.disclaimer) td:nth-child(3),
+.table-card:has(.disclaimer) th:nth-child(6),
+.table-card:has(.disclaimer) td:nth-child(6) {
+  white-space: nowrap;
+}
+
+/* Action column */
+.table-card:has(.disclaimer) th:last-child,
+.table-card:has(.disclaimer) td:last-child {
+  width: 132px;
+  text-align: right;
+}
+
+.table-card:has(.disclaimer) td:last-child .secondary {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+/* Responsible-use footer */
+.table-card > .disclaimer {
+  min-height: 38px;
+  margin: 0;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: #fcfbfd;
+  border-top: 1px solid #e5e0e8;
+
+  color: #716979;
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.table-card > .disclaimer svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  color: #746c7d;
+}
+
+/* The risk table already has its own premium header rules. */
+.table-card:has(.risk-review-row) > .card-head {
+  padding: 19px 18px 17px;
+}
+
+/* Smaller enterprise widths: allow horizontal table scrolling cleanly. */
+@media (max-width: 1150px) {
+  .table-card:not(:has(.risk-review-row)) .table-wrap {
+    overflow-x: auto;
+  }
+
+  .table-card:has(.disclaimer) table {
+    min-width: 930px;
+  }
+}
+
+/* =========================================================
+   OUTREACH CAMPAIGNS — PREMIUM CAMPAIGN CARDS
+   Manual UI QA refinement
+   ========================================================= */
+
+/* Campaigns should use balanced cards rather than the generic 1.55 / 1 split. */
+.grid.two:has(> .campaign) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* Main campaign surface */
+.campaign.card {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  margin-top: 10px;
+  padding: 0;
+  overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid #ddd8e3;
+  border-radius: 12px;
+
+  box-shadow:
+    0 1px 2px rgba(40, 36, 49, 0.02),
+    0 7px 22px rgba(55, 42, 69, 0.035);
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.campaign.card:hover {
+  border-color: #cdc6d5;
+  box-shadow:
+    0 2px 4px rgba(40, 36, 49, 0.035),
+    0 12px 28px rgba(55, 42, 69, 0.06);
+  transform: translateY(-1px);
+}
+
+/* Metadata header */
+.campaign > .card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  min-height: 58px;
+  margin: 0;
+  padding: 13px 16px;
+
+  background: #faf9fb;
+  border-bottom: 1px solid #e8e4eb;
+}
+
+.campaign > .card-head > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.campaign > .card-head .badge {
+  flex: 0 0 auto;
+  min-height: 24px;
+  padding: 4px 9px;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.campaign > .card-head small {
+  min-width: 0;
+  overflow: hidden;
+  color: #716979;
+  font-size: 10.5px;
+  font-weight: 550;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.campaign > .card-head > span {
+  max-width: 46%;
+  color: #504858;
+  font-size: 10.5px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-align: right;
+}
+
+/* Campaign title */
+.campaign > h3 {
+  margin: 0;
+  padding: 18px 16px 4px;
+
+  color: #282431;
+  font-size: 15px;
+  font-weight: 760;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+/* KPI panel */
+.campaign .campaign-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  margin: 14px 16px 16px;
+  padding: 0;
+
+  overflow: hidden;
+  background: #faf9fb;
+  border: 1px solid #e4e0e7;
+  border-radius: 10px;
+}
+
+.campaign .campaign-metrics span {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  min-width: 0;
+  min-height: 68px;
+  padding: 11px 12px;
+
+  color: #746c7c;
+  font-size: 10px;
+  font-weight: 550;
+  line-height: 1.25;
+
+  border-right: 1px solid #e7e3ea;
+  border-bottom: 1px solid #e7e3ea;
+}
+
+.campaign .campaign-metrics span:nth-child(4n) {
+  border-right: 0;
+}
+
+.campaign .campaign-metrics span:nth-child(n + 5) {
+  border-bottom: 0;
+}
+
+.campaign .campaign-metrics b {
+  display: block;
+  margin: 0 0 5px;
+
+  color: #302839;
+  font-size: 18px;
+  font-weight: 780;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Give the most action-oriented metrics subtle semantic emphasis. */
+.campaign .campaign-metrics span:nth-child(3) b,
+.campaign .campaign-metrics span:nth-child(4) b {
+  color: #4e79a7;
+}
+
+.campaign .campaign-metrics span:nth-child(5) b {
+  color: #2e8a72;
+}
+
+.campaign .campaign-metrics span:nth-child(6) b {
+  color: #8a7b64;
+}
+
+.campaign .campaign-metrics span:nth-child(7) b {
+  color: #b85867;
+}
+
+/* Footer actions */
+.campaign .campaign-actions {
+  display: flex;
+  gap: 9px;
+
+  margin-top: auto;
+  padding: 0 16px 16px;
+}
+
+.campaign .campaign-actions .primary,
+.campaign .campaign-actions .secondary {
+  min-height: 40px;
+  padding: 0 16px;
+
+  border-radius: 9px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.campaign .campaign-actions .primary:only-child {
+  min-width: 142px;
+}
+
+.campaign .campaign-actions .primary:not(:only-child),
+.campaign .campaign-actions .secondary {
+  flex: 1;
+}
+
+/* Simulated campaign responses */
+.campaign .response-list {
+  margin: 0 16px 16px;
+  padding: 10px 12px;
+
+  max-height: 145px;
+  overflow-y: auto;
+
+  background: #f7f6f9;
+  border: 1px solid #e5e1e8;
+  border-radius: 9px;
+}
+
+.campaign .response-list span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding: 7px 0;
+
+  color: #6d6675;
+  font-size: 10.5px;
+  line-height: 1.35;
+
+  border-bottom: 1px solid #ebe7ee;
+}
+
+.campaign .response-list span:last-child {
+  border-bottom: 0;
+}
+
+.campaign .response-list b {
+  color: #342d3c;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+/* Tabs above campaign cards: stronger active state without heaviness */
+.tabs:has(+ .grid.two > .campaign) {
+  margin-bottom: 10px;
+}
+
+.tabs:has(+ .grid.two > .campaign) button {
+  min-height: 42px;
+  padding: 0 13px;
+  font-size: 11.5px;
+}
+
+.tabs:has(+ .grid.two > .campaign) button.active {
+  color: #372a45;
+  font-weight: 750;
+}
+
+/* Responsive campaign layout */
+@media (max-width: 1180px) {
+  .grid.two:has(> .campaign) {
+    grid-template-columns: 1fr;
+  }
+
+  .campaign.card {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .campaign > .card-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .campaign > .card-head > span {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .campaign .campaign-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .campaign .campaign-metrics span,
+  .campaign .campaign-metrics span:nth-child(4n),
+  .campaign .campaign-metrics span:nth-child(n + 5) {
+    border-right: 1px solid #e7e3ea;
+    border-bottom: 1px solid #e7e3ea;
+  }
+
+  .campaign .campaign-metrics span:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .campaign .campaign-metrics span:last-child {
+    border-bottom: 0;
+  }
+
+  .campaign .campaign-actions {
+    flex-direction: column;
+  }
+
+  .campaign .campaign-actions .primary,
+  .campaign .campaign-actions .secondary {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   CARE MANAGER — COMPACT ASSIGNED PATIENT WORKSPACE
+   Manual UI QA refinement
+   ========================================================= */
+
+.assigned-patients-card {
+  overflow: hidden;
+}
+
+.assigned-patients-card > .card-head {
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid #e5e0e8;
+}
+
+.assigned-patients-card .table-wrap {
+  width: 100%;
+  overflow: visible !important;
+}
+
+/* Bulk actions */
+
+.assigned-patients-card .bulk-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  padding: 10px 12px;
+
+  background: #f7f5fb;
+  border: 0;
+  border-bottom: 1px solid #ddd7e8;
+}
+
+.assigned-patients-card .bulk-bar b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 34px;
+  padding: 0 11px;
+
+  border-radius: 8px;
+
+  background: #ebe7f6;
+  color: #534a9e;
+
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.assigned-patients-card .bulk-bar .secondary {
+  min-height: 34px;
+  padding: 0 11px;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  font-size: 10.5px;
+  font-weight: 650;
+}
+
+/* Main compact grid */
+
+.assigned-patient-grid {
+  width: 100%;
+  border: 0;
+  background: #ffffff;
+}
+
+.assigned-grid-header,
+.assigned-grid-row {
+  display: grid;
+
+  grid-template-columns:
+    34px
+    minmax(0, 1.45fr)
+    minmax(0, 1.15fr)
+    minmax(105px, 0.95fr)
+    minmax(112px, 0.95fr)
+    38px;
+
+  column-gap: 10px;
+  align-items: center;
+}
+
+/* Header */
+
+.assigned-grid-header {
+  min-height: 43px;
+  padding: 0 13px;
+
+  background: #f8f6f9;
+  border-bottom: 1px solid #ddd8e3;
+
+  color: #6c6374;
+
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.assigned-sort {
+  display: inline-flex;
+  align-items: center;
+
+  width: fit-content;
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: inherit;
+
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+
+  cursor: pointer;
+}
+
+/* Patient row */
+
+.assigned-grid-row {
+  min-height: 82px;
+  padding: 11px 13px;
+
+  border-bottom: 1px solid #ebe7ee;
+
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.assigned-grid-row:last-child {
+  border-bottom: 0;
+}
+
+.assigned-grid-row:hover {
+  background: #fbfafc;
+}
+
+.assigned-grid-row.selected {
+  background: #f6f3fb;
+  box-shadow: inset 3px 0 0 #635bb5;
+}
+
+/* Checkbox */
+
+.assigned-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.assigned-checkbox input,
+.assigned-grid-header input {
+  width: 16px;
+  height: 16px;
+
+  accent-color: #635bb5;
+
+  cursor: pointer;
+}
+
+/* Patient */
+
+.assigned-patient {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  text-align: left;
+  cursor: pointer;
+}
+
+.assigned-avatar {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 36px;
+
+  border-radius: 10px;
+
+  background: #f0edf5;
+  border: 1px solid #dfd9e6;
+
+  color: #453752;
+
+  font-size: 10.5px;
+  font-weight: 750;
+}
+
+.assigned-patient-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  min-width: 0;
+}
+
+.assigned-patient-info b {
+  overflow: hidden;
+
+  color: #282431;
+
+  font-size: 12.5px;
+  font-weight: 750;
+  line-height: 1.25;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assigned-patient-info small {
+  color: #837b89;
+
+  font-size: 9.5px;
+  line-height: 1.25;
+
+  white-space: nowrap;
+}
+
+/* Conditions */
+
+.assigned-conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  min-width: 0;
+}
+
+.assigned-conditions span {
+  overflow: hidden;
+
+  color: #554d5d;
+
+  font-size: 10.5px;
+  line-height: 1.3;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Risk + care gap */
+
+.assigned-priority {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.assigned-priority .badge {
+  max-width: 100%;
+  font-size: 9.5px;
+  white-space: nowrap;
+}
+
+.assigned-gap-count {
+  display: inline-flex;
+  align-items: center;
+
+  color: #2e8a72;
+
+  font-size: 9.5px;
+  font-weight: 650;
+}
+
+.assigned-gap-count.has-gap {
+  color: #a16d1a;
+}
+
+/* Care status */
+
+.assigned-care-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+
+  min-width: 0;
+}
+
+.assigned-care-status > .badge {
+  max-width: 100%;
+
+  font-size: 9.5px;
+
+  white-space: normal;
+  text-align: center;
+}
+
+.assigned-care-status small {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  color: #8a818f;
+
+  font-size: 9px;
+  line-height: 1.2;
+}
+
+.assigned-care-status small b {
+  color: #615968;
+
+  font-size: 9.5px;
+  font-weight: 650;
+}
+
+/* Open patient */
+
+.assigned-open-cell {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.assigned-open-button {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #746b7c;
+
+  cursor: pointer;
+
+  transition:
+    color 140ms ease,
+    background-color 140ms ease,
+    transform 140ms ease;
+}
+
+.assigned-open-button:hover {
+  background: #efecf4;
+  color: #372a45;
+  transform: translateX(2px);
+}
+
+.assigned-open-button:focus-visible,
+.assigned-patient:focus-visible,
+.assigned-sort:focus-visible {
+  outline: 2px solid #635bb5;
+  outline-offset: 2px;
+}
+
+/* No horizontal scrollbar for this workspace */
+
+.assigned-patients-card .table-wrap {
+  scrollbar-width: none;
+}
+
+.assigned-patients-card .table-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+/* Medium width */
+
+@media (max-width: 1180px) {
+  .assigned-grid-header,
+  .assigned-grid-row {
+    grid-template-columns:
+      32px
+      minmax(0, 1.4fr)
+      minmax(0, 1fr)
+      minmax(92px, 0.85fr)
+      minmax(105px, 0.9fr)
+      34px;
+
+    column-gap: 8px;
+  }
+
+  .assigned-avatar {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+  }
+}
+
+@media (max-width: 900px) {
+  .assigned-grid-header,
+  .assigned-grid-row {
+    grid-template-columns:
+      32px
+      minmax(150px, 1.5fr)
+      minmax(120px, 1fr)
+      minmax(100px, 0.9fr)
+      34px;
+  }
+
+  .assigned-grid-header > :nth-child(5),
+  .assigned-grid-row > :nth-child(5) {
+    display: none;
+  }
+}
+
+/* =========================================================
+   CARE PLANS — PREMIUM SUMMARY CARDS
+   Manual UI QA refinement
+   ========================================================= */
+
+.care-plan-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid #ddd8e3;
+  border-radius: 12px;
+
+  box-shadow:
+    0 1px 2px rgba(40, 36, 49, 0.02),
+    0 8px 24px rgba(55, 42, 69, 0.035);
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.care-plan-card:hover {
+  border-color: #cec7d6;
+  box-shadow:
+    0 2px 4px rgba(40, 36, 49, 0.03),
+    0 12px 28px rgba(55, 42, 69, 0.055);
+  transform: translateY(-1px);
+}
+
+/* Subtle care-management accent */
+.care-plan-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 4px;
+  height: 100%;
+
+  background: #2e8a72;
+}
+
+/* Header */
+
+.care-plan-card > .card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+
+  margin: 0;
+  padding: 19px 18px 16px 20px;
+
+  background: #ffffff;
+  border-bottom: 1px solid #ebe7ee;
+}
+
+.care-plan-card > .card-head > div {
+  min-width: 0;
+}
+
+.care-plan-card > .card-head h2 {
+  margin: 0 0 7px;
+
+  color: #282431;
+
+  font-size: 16px;
+  font-weight: 760;
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+}
+
+.care-plan-card > .card-head p {
+  margin: 0;
+
+  color: #756d7d;
+
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.care-plan-card > .card-head > .badge {
+  flex: 0 0 auto;
+
+  min-height: 25px;
+  padding: 4px 10px;
+
+  font-size: 10px;
+  font-weight: 750;
+}
+
+/* Detail area */
+
+.care-plan-card .settings-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  margin: 0;
+  padding: 16px 18px 16px 20px;
+
+  border: 0;
+}
+
+.care-plan-card .settings-list > div {
+  display: block;
+
+  min-width: 0;
+  min-height: 74px;
+
+  margin: 0;
+  padding: 11px 12px;
+
+  background: #faf9fb;
+  border: 1px solid #e7e2ea;
+  border-radius: 9px;
+}
+
+.care-plan-card .settings-list > div:last-child {
+  min-height: 64px;
+}
+
+/* Make Start date compact */
+.care-plan-card .settings-list > div:last-child {
+  grid-column: span 1;
+}
+
+.care-plan-card .settings-list dt {
+  margin: 0 0 7px;
+
+  color: #7a7281;
+
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 1.2;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.care-plan-card .settings-list dd {
+  margin: 0;
+
+  color: #332c3b;
+
+  font-size: 11.5px;
+  font-weight: 650;
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+  word-break: normal;
+  text-align: left;
+}
+
+/* Give important plan elements semantic cues */
+.care-plan-card .settings-list > div:nth-child(1) {
+  background: #f4f8f6;
+  border-color: #dcebe5;
+}
+
+.care-plan-card .settings-list > div:nth-child(3) {
+  background: #fbf8f0;
+  border-color: #eee3c9;
+}
+
+/* Linked tasks becomes a true card footer */
+
+.care-plan-card .linked-tasks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+
+  min-height: 62px;
+
+  margin: auto 0 0;
+  padding: 13px 18px 14px 20px;
+
+  background: #fcfbfd;
+  border-top: 1px solid #e8e4eb;
+}
+
+.care-plan-card .linked-tasks > b {
+  width: 100%;
+  margin: 0 0 2px;
+
+  color: #39313f;
+
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.care-plan-card .linked-tasks span {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 28px;
+  padding: 5px 9px;
+
+  border-radius: 7px;
+
+  background: #f0eef6;
+  border: 1px solid #dfd9e7;
+
+  color: #554c60;
+
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.care-plan-card .linked-tasks small {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 30px;
+  padding: 6px 9px;
+
+  color: #817988;
+
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+/* Keep care plan cards balanced in the two-column grid */
+.grid.two:has(> .care-plan-card) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.grid.two:has(> .care-plan-card) > .care-plan-card {
+  height: 100%;
+}
+
+/* Better spacing from summary KPIs */
+.stats-grid.compact + .grid.two:has(> .care-plan-card) {
+  margin-top: 16px;
+}
+
+/* Responsive */
+
+@media (max-width: 1180px) {
+  .grid.two:has(> .care-plan-card) {
+    grid-template-columns: 1fr;
+  }
+
+  .care-plan-card .settings-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .care-plan-card .settings-list {
+    grid-template-columns: 1fr;
+  }
+
+  .care-plan-card .settings-list > div:last-child {
+    grid-column: auto;
+  }
+
+  .care-plan-card > .card-head {
+    padding-right: 14px;
   }
 }
 

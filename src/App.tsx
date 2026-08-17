@@ -230,13 +230,13 @@ function Shell() {
             </section>
           ))}
         </nav>
-        <div className="sidebar-foot">
+        {/* <div className="sidebar-foot">
           <ShieldCheck size={16} />
           <div>
             <b>Demo environment</b>
             <small>Synthetic data only</small>
           </div>
-        </div>
+        </div> */}
       </aside>
       <main>
         <header className="topbar">
@@ -728,9 +728,11 @@ function Registry({ filter }: { filter?: (p: Patient) => boolean }) {
 function PatientTable({
   rows,
   onOpen,
+  compact = false,
 }: {
   rows: Patient[];
   onOpen: (p: Patient) => void;
+  compact?: boolean;
 }) {
   const [selected, setSelected] = useState<string[]>([]);
   const assignManager = useAppStore((s) => s.assignManager);
@@ -832,93 +834,297 @@ function PatientTable({
           </button>
         </div>
       )}
-      <table>
-        <thead>
-          <tr>
-            <th>
+      {compact ? (
+  <div
+    className="assigned-patient-grid"
+    role="table"
+    aria-label="Assigned patients"
+  >
+    <div className="assigned-grid-header" role="row">
+      <div role="columnheader">
+        <input
+          aria-label="Select all visible patients"
+          type="checkbox"
+          checked={allSelected}
+          onChange={toggleAll}
+        />
+      </div>
+
+      <button
+        type="button"
+        className="assigned-sort"
+        onClick={() => setSort("name")}
+      >
+        Patient {sort === "name" ? "↑" : ""}
+      </button>
+
+      <span role="columnheader">Conditions</span>
+
+      <button
+        type="button"
+        className="assigned-sort"
+        onClick={() => setSort("risk")}
+      >
+        Priority {sort === "risk" ? "↓" : ""}
+      </button>
+
+      <span role="columnheader">Care status</span>
+
+      <span role="columnheader" aria-label="Actions" />
+    </div>
+
+    <div role="rowgroup">
+      {visibleRows.map((p) => {
+        const openGaps = p.gaps.filter(
+          (g) => g.status !== "Completed",
+        ).length;
+
+        const initials = p.name
+          .split(" ")
+          .map((part) => part[0])
+          .slice(0, 2)
+          .join("");
+
+        const isSelected = selected.includes(p.id);
+
+        return (
+          <div
+            key={p.id}
+            role="row"
+            className={`assigned-grid-row ${
+              isSelected ? "selected" : ""
+            }`}
+          >
+            <div role="cell" className="assigned-checkbox">
               <input
-                aria-label="Select all visible patients"
+                aria-label={`Select ${p.name}`}
                 type="checkbox"
-                checked={allSelected}
-                onChange={toggleAll}
+                checked={isSelected}
+                onChange={() => toggle(p.id)}
               />
-            </th>
-            <th>
-              <button className="sort-button" onClick={() => setSort("name")}>
-                Patient {sort === "name" ? "↑" : ""}
+            </div>
+
+            <div role="cell">
+              <button
+                type="button"
+                className="assigned-patient"
+                onClick={() => onOpen(p)}
+              >
+                <span className="assigned-avatar">
+                  {initials}
+                </span>
+
+                <span className="assigned-patient-info">
+                  <b>{p.name}</b>
+
+                  <small>
+                    {p.id} · Age {p.age}
+                  </small>
+                </span>
               </button>
-            </th>
-            <th>Age</th>
-            <th>Primary conditions</th>
-            <th>
-              <button className="sort-button" onClick={() => setSort("risk")}>
-                Current risk {sort === "risk" ? "↓" : ""}
+            </div>
+
+            <div
+              role="cell"
+              className="assigned-conditions"
+              title={p.conditions.join(", ")}
+            >
+              {p.conditions.map((condition) => (
+                <span key={condition}>
+                  {condition}
+                </span>
+              ))}
+            </div>
+
+            <div role="cell" className="assigned-priority">
+              <RiskTierBadge risk={p.risk} />
+
+              <small
+                className={
+                  openGaps > 0
+                    ? "assigned-gap-count has-gap"
+                    : "assigned-gap-count"
+                }
+              >
+                {openGaps} {openGaps === 1 ? "care gap" : "care gaps"}
+              </small>
+            </div>
+
+            <div role="cell" className="assigned-care-status">
+              <Badge
+                tone={
+                  p.status === "Active Management"
+                    ? "green"
+                    : "gold"
+                }
+              >
+                {p.status}
+              </Badge>
+
+              <small>
+                Last encounter
+                <b>{p.lastEncounter}</b>
+              </small>
+            </div>
+
+            <div role="cell" className="assigned-open-cell">
+              <button
+                type="button"
+                className="assigned-open-button"
+                onClick={() => onOpen(p)}
+                aria-label={`Open ${p.name}`}
+              >
+                <ChevronRight size={18} />
               </button>
-            </th>
-            <th>Care gaps</th>
-            <th>Last encounter</th>
-            <th>Medication risk</th>
-            <th>Utilization</th>
-            <th>Care manager</th>
-            <th>Status</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {visibleRows.map((p) => (
-            <tr key={p.id}>
-              <td>
-                <input
-                  aria-label={`Select ${p.name}`}
-                  type="checkbox"
-                  checked={selected.includes(p.id)}
-                  onChange={() => toggle(p.id)}
-                />
-              </td>
-              <td>
-                <button className="patient-link" onClick={() => onOpen(p)}>
-                  <span>
-                    {p.name
-                      .split(" ")
-                      .map((x) => x[0])
-                      .join("")}
-                  </span>
-                  <b>
-                    {p.name}
-                    <small>
-                      {p.id} · Age {p.age}
-                    </small>
-                  </b>
-                </button>
-              </td>
-              <td>{p.age}</td>
-              <td>{p.conditions.join(", ")}</td>
-              <td><RiskTierBadge risk={p.risk} /></td>
-              <td><b>{p.gaps.filter((g) => g.status !== "Completed").length}</b> unresolved</td>
-              <td>{p.lastEncounter}</td>
-              <td>{p.medicationRisk ? <Badge tone="gold">Potential concern</Badge> : <Badge tone="green">No current concern</Badge>}</td>
-              <td>{p.edVisits} ED · {p.admissions} adm.</td>
-              <td>{p.manager}</td>
-              <td>
-                <Badge
-                  tone={p.status === "Active Management" ? "green" : "gold"}
-                >
-                  {p.status}
-                </Badge>
-              </td>
-              <td>
-                <button
-                  className="icon-btn"
-                  onClick={() => onOpen(p)}
-                  aria-label={`Open ${p.name}`}
-                >
-                  <ChevronRight size={17} />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+) : (
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <input
+            aria-label="Select all visible patients"
+            type="checkbox"
+            checked={allSelected}
+            onChange={toggleAll}
+          />
+        </th>
+
+        <th>
+          <button
+            className="sort-button"
+            onClick={() => setSort("name")}
+          >
+            Patient {sort === "name" ? "↑" : ""}
+          </button>
+        </th>
+
+        <th>Age</th>
+        <th>Primary conditions</th>
+
+        <th>
+          <button
+            className="sort-button"
+            onClick={() => setSort("risk")}
+          >
+            Current risk {sort === "risk" ? "↓" : ""}
+          </button>
+        </th>
+
+        <th>Care gaps</th>
+        <th>Last encounter</th>
+        <th>Medication risk</th>
+        <th>Utilization</th>
+        <th>Care manager</th>
+        <th>Status</th>
+        <th />
+      </tr>
+    </thead>
+
+    <tbody>
+      {visibleRows.map((p) => (
+        <tr key={p.id}>
+          <td>
+            <input
+              aria-label={`Select ${p.name}`}
+              type="checkbox"
+              checked={selected.includes(p.id)}
+              onChange={() => toggle(p.id)}
+            />
+          </td>
+
+          <td>
+            <button
+              className="patient-link"
+              onClick={() => onOpen(p)}
+            >
+              <span>
+                {p.name
+                  .split(" ")
+                  .map((x) => x[0])
+                  .join("")}
+              </span>
+
+              <b>
+                {p.name}
+
+                <small>
+                  {p.id} · Age {p.age}
+                </small>
+              </b>
+            </button>
+          </td>
+
+          <td>{p.age}</td>
+
+          <td>{p.conditions.join(", ")}</td>
+
+          <td>
+            <RiskTierBadge risk={p.risk} />
+          </td>
+
+          <td>
+            <b>
+              {
+                p.gaps.filter(
+                  (g) => g.status !== "Completed",
+                ).length
+              }
+            </b>{" "}
+            unresolved
+          </td>
+
+          <td>{p.lastEncounter}</td>
+
+          <td>
+            {p.medicationRisk ? (
+              <Badge tone="gold">
+                Potential concern
+              </Badge>
+            ) : (
+              <Badge tone="green">
+                No current concern
+              </Badge>
+            )}
+          </td>
+
+          <td>
+            {p.edVisits} ED · {p.admissions} adm.
+          </td>
+
+          <td>{p.manager}</td>
+
+          <td>
+            <Badge
+              tone={
+                p.status === "Active Management"
+                  ? "green"
+                  : "gold"
+              }
+            >
+              {p.status}
+            </Badge>
+          </td>
+
+          <td>
+            <button
+              className="icon-btn"
+              onClick={() => onOpen(p)}
+              aria-label={`Open ${p.name}`}
+            >
+              <ChevronRight size={17} />
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
       {rows.length > pageSize && (
         <div className="pagination">
           <span>
@@ -1861,7 +2067,7 @@ function CareManagement() {
         />
       </div>
       <div className="grid two">
-        <section className="card span2">
+        <section className="card span2 assigned-patients-card">
           <div className="card-head">
             <div>
               <h2>Assigned patients</h2>
@@ -1869,10 +2075,11 @@ function CareManagement() {
             </div>
             <Badge>{assigned.length} detailed records</Badge>
           </div>
-          <PatientTable
-            rows={assigned}
-            onOpen={(p) => nav(`/patients/${p.id}`)}
-          />
+         <PatientTable
+  rows={assigned}
+  compact
+  onOpen={(p) => nav(`/patients/${p.id}`)}
+/>
         </section>
         <section className="card">
           <div className="card-head">
@@ -1959,7 +2166,7 @@ function CarePlans() {
       <div className="grid two">
         {carePlans.map((plan) => {
           const patient = ps.find((p) => p.id === plan.patientId);
-          return <section className="card" key={plan.id}>
+          return <section className="card care-plan-card" key={plan.id}>
             <div className="card-head"><div><h2>{plan.name}</h2><p>{plan.id} · {patient?.name} · Owner {plan.owner}</p></div><Badge tone="green">{plan.status}</Badge></div>
             <dl className="settings-list"><div><dt>Goals</dt><dd>{plan.goals.join(" · ")}</dd></div><div><dt>Monitoring</dt><dd>{plan.monitoring.join(" · ")}</dd></div><div><dt>Screening</dt><dd>{plan.screenings.join(" · ") || "None configured"}</dd></div><div><dt>Follow-ups</dt><dd>{plan.followUps.join(" · ")}</dd></div><div><dt>Start date</dt><dd>{plan.startDate}</dd></div></dl>
             <div className="linked-tasks"><b>Linked tasks</b>{tasks.filter((t) => plan.taskIds.includes(t.id)).map((task) => <span key={task.id}>{task.action} · {task.status}</span>)}{!tasks.some((t) => plan.taskIds.includes(t.id)) && <small>No linked tasks yet.</small>}</div>
